@@ -1,40 +1,24 @@
 <template>
   <div id="app">
-    <pagehaute></pagehaute>
-    <navbarinscription></navbarinscription>
-    <pageconnexion></pageconnexion>
-    <basdepage></basdepage>
+      <pagehaute></pagehaute>
+      <router-view></router-view>
   </div>
 </template>
 
+
 <script>
 
-import PageHaute from "./components/PageHaute.vue"
-import PageConnexion from "./components/PageConnexion.vue"
-import BasDePage from "./components/BasDePage.vue"
-import NavBarInscription from "./components/NavBarInscription.vue"
-
-
+import PageHaute from "./components/PageHaute"
 
 export default {
   name: 'App',
   components: {
-      "pagehaute" : PageHaute,
-      "pageconnexion" : PageConnexion,
-      "basdepage" : BasDePage,
-      "navbarinscription" : NavBarInscription
+      "pagehaute": PageHaute
       
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
