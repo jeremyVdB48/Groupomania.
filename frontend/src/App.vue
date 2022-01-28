@@ -1,17 +1,29 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <pagehaute></pagehaute>
+    <navbarinscription></navbarinscription>
+    <pageconnexion></pageconnexion>
+    <basdepage></basdepage>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
+import PageHaute from "./components/PageHaute.vue"
+import PageConnexion from "./components/PageConnexion.vue"
+import BasDePage from "./components/BasDePage.vue"
+import NavBarInscription from "./components/NavBarInscription.vue"
+
+
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+      "pagehaute" : PageHaute,
+      "pageconnexion" : PageConnexion,
+      "basdepage" : BasDePage,
+      "navbarinscription" : NavBarInscription
+      
   }
 }
 </script>
