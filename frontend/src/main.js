@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import VueRouter from "vue-router"
 import Routes from './Routes'
+import moment from "moment"
 
 // mise en place de bootstrap et des icons
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
@@ -12,10 +13,18 @@ Vue.use(VueRouter)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
+// permet de modifier le format de la date et heure
+Vue.filter('formatDate', function(value) {
+  if (value) {
+      return moment(String(value)).format('DD/MM/YYYY hh:mm')
+  }
+});
+
 Vue.config.productionTip = false
 
 const router = new VueRouter({
-  routes: Routes
+  routes: Routes,
+  mode: "history"// retire le # dans la barre de recherche
 })
 
 new Vue({

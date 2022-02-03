@@ -11,9 +11,9 @@
 
 <script>
 
-import NavBarProfil from "./NavBarProfil.vue"
-import PageProfil from "./PageProfil.vue"
-import BasDePage from "./BasDePage.vue"
+import NavBarProfil from "../NavBarProfil.vue"
+import PageProfil from "../PageProfil.vue"
+import BasDePage from "../BasDePage.vue"
 
 export default {
    name : "Profil",

@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <navbarconnexion></navbarconnexion>
         <pageinscription></pageinscription>
         <basdepage></basdepage>
@@ -11,9 +10,9 @@
 
 <script>
 
-import NavBarConnexion from "./NavBarConnexion.vue"
-import PageInscription from "./PageInscription.vue"
-import BasDePage from "./BasDePage.vue"
+import NavBarConnexion from "../NavBarConnexion.vue"
+import PageInscription from "../PageInscription.vue"
+import BasDePage from "../BasDePage.vue"
 
 export default {
    name : "Inscription",

@@ -10,9 +10,9 @@
 
 <script>
 
-import NavBarInscription from "./NavBarInscription.vue"
-import PageConnexion from "./PageConnexion.vue"
-import BasDePage from "./BasDePage.vue"
+import NavBarInscription from "../NavBarInscription.vue"
+import PageConnexion from "../PageConnexion.vue"
+import BasDePage from "../BasDePage.vue"
 
 export default {
    name : "Connexion",
