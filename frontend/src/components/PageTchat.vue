@@ -2,6 +2,7 @@
     
     <div>
         <h2 class="display-6 text-center">Tchat :</h2>
+       <!-- <p class="text-center display-5">Bienvenue sur le chat Goupomania {{username}}</p> -->
         <div class="card m-5 p-2 text-primary" v-bind:key="index" v-for="(textAll, index) in texte">
             <p class="text-primary">Message n° : {{textAll.id_post}}<br> écrit le {{textAll.date_post | formatDate}}<br> par :</p>
             <p class="text-dark">{{textAll.texte_post}}</p>
@@ -20,19 +21,23 @@
 
 
 <script>
-
 import axios from "axios"
 
 export default {
     name : "PageTchat",
     data(){
         return{
+           
             texte : [],
-            texte_post : ""
+            texte_post : "", 
+            date_post : "",        
+            id_utilisateur : ""
         }
             
     },
-    mounted(){
+
+    mounted(){     
+      
         axios
             .get("http://localhost:5000/api/post")
             .then(reponse => {
@@ -48,10 +53,14 @@ export default {
     },
 
     methods: {
-        EnvoiPost() {
+       EnvoiPost() {         
+    
+            
             axios
                 .post("http://localhost:5000/api/post",{
-                    texte_post: this.texte_post
+                    texte_post: this.texte_post,
+                    date_post:this.date_post,
+                    id_utilisateur:this.id_utilisateur
                 },
                 )
                 .then(reponse => {
@@ -61,7 +70,7 @@ export default {
                     console.log(error);
                     console.log("Votre message n'a pas pu etre posté !");
                 })
-        }
+       }
 
     }
 

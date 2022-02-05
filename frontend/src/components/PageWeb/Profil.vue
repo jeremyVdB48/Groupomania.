@@ -1,6 +1,5 @@
 <template>
 <div>
-    <h1> Salutation membre n° {{ id }}</h1>
     <navbarprofil></navbarprofil>
     <pageprofil></pageprofil>
     <basdepage></basdepage>
@@ -24,7 +23,7 @@ export default {
    },
    data(){
        return{
-           id: this.$route.params.id
+           
        }
    }
 }
