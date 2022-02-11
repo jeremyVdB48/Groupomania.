@@ -1,8 +1,5 @@
 const Post = require("../connexionSQL");
 
-//  `SELECT  posts.id_post, posts.texte_post, posts.date_post, utilisateurs.pseudo_utilisateur 
-//     FROM  posts, utilisateurs 
-//         WHERE posts.id_post = utilisateurs.id_utilisateur  `
 
 ///////////////////////////////////// MESSAGES /////////////////////////////////////////////
        
@@ -53,7 +50,7 @@ exports.deletePost = (req, res) => {
 };
 
 // recuperation des posts par utilisateur
-exports.getUsersPosts =(req, res) => {
+exports.getUsersPosts = (req, res) => {
     let recup = `SELECT * FROM posts WHERE posts.id_utilisateur_post = ${req.params.id}`
         Post.query(recup, (err, result) => {
             if (err) {
@@ -62,6 +59,17 @@ exports.getUsersPosts =(req, res) => {
                 return res.status(201).json(result)
     })
     
+};
+
+// modifier un post 
+exports.modifyPost = (req, res) => {
+    let modifier = `UPDATE posts SET texte_post = "${req.body.texte_post}" WHERE id_post = ${req.params.id}`
+        Post.query(modifier, (err, result) => {
+            if (err) {
+                return res.status(400).json(err)         
+            }else
+                return res.status(201).json({ message: "message modifié avec succés !"})
+        })
 };
 
 ///////////////////////////////// COMMENTAIRE DE POST /////////////////////////////////////////////
@@ -108,4 +116,18 @@ exports.deleteCommentaire =(req, res) => {
             }else
                 return res.status(201).json({ message: 'Votre commentaire a été supprimé !'})
         })
+};
+
+// recupèration de tous les commentaires d'un seul message
+exports.recupAllCommentOnePost =(req, res) => {
+    let recupCommentairesForOnePost = `SELECT * FROM commentaire_post
+    WHERE id_post = ${req.params.id} `
+
+    Post.query(recupCommentairesForOnePost, (err, result) => {
+        if (err) {
+            return res.status(400).json(err)         
+        }else
+            return res.status(201).json(result)
+    })
+
 };

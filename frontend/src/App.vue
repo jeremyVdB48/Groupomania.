@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-      <pagehaute></pagehaute>
+      <pagehaute></pagehaute>         
       <router-view></router-view>
   </div>
 </template>
@@ -20,5 +20,13 @@ export default {
 </script>
 
 <style>
+
+body{
+  background-image: url("./assets/icon.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-position: fixed;
+  background-size: 80%;
+}
 
 </style>

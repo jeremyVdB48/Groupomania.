@@ -14,11 +14,15 @@
     "core-js": "^3.6.5",
     "moment": "^2.29.1",
     "vue": "^2.6.14",
-    "vue-router": "^3.5.3"
+    "vue-localstorage": "^0.6.2",
+    "vue-router": "^3.5.3",
+    "vue-sessionstorage": "^1.0.0",
+    "vuex": "^3.4.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
