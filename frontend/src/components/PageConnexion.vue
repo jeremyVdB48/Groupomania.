@@ -2,7 +2,7 @@
 <div class="container">
     <div class=" card cardConnexion  m-auto mt-5 p-5 text-center ">
         <h2 class=" display-6 text-center connexionCompte">Connexion à mon compte :</h2>
-        <form @submit.prevent = Verif() class=" text-center" >
+        <form @submit.prevent = Verif()  class=" text-center" >
             <div class="form-group p-2 ">
                 <label for = "pseudo" class="h4">Pseudo : </label>
                 <input id = "pseudo" type="text" class="form-control m-auto w-50" required v-model="pseudo_utilisateur">
@@ -14,10 +14,10 @@
             </div>
             
             <button type="submit" class="btn btn-danger m-4 btn-lg connecter">Se connecter</button>
-
+           
         </form> 
     </div>
-   
+  
 </div>   
 </template>
 
@@ -36,20 +36,13 @@ export default {
    }, 
    methods: {
        Verif() {
-        
+
              axios
                 .post("http://localhost:5000/api/utilisateur/connexion",{
                     pseudo_utilisateur: this.pseudo_utilisateur,
                     password_utilisateur: this.password_utilisateur,
                    
-                },
-                
-                {
-                    headers:{
-                        "Content-type": "application/json"
-                    }
-                }
-
+                },               
                 )
                 .then(reponse => {
                     console.log(reponse);
@@ -58,7 +51,7 @@ export default {
                     this.$localStorage.set("utilisateur",dataUser);                                                          
                     this.$router.push("/")
                 })
-                .catch(error =>{                  
+                .catch(error => {                  
                      console.log(error);
                      console.log("Echec !");
                 })

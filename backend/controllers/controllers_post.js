@@ -76,7 +76,7 @@ exports.modifyPost = (req, res) => {
 
 // commentaire
 exports.commentaire =(req, res) => {
-    let comment = `INSERT INTO commentaire_post VALUES (NULL, ${req.body.id_utilisateur}, ${req.body.id_post}, NOW(), "${req.body.commentaire}")`
+    let comment = `INSERT INTO commentaire_post VALUES (NULL, ${req.body.id_utilisateur}, ${req.params.id}, NOW(), "${req.body.commentaire}")`
         Post.query(comment, (err, result) => {
             if (err) {
                 return res.status(400).json(err)         

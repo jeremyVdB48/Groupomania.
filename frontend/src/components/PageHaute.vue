@@ -15,8 +15,7 @@ export default {
 .accueil{
     background-color: #091f43;
     border: 5px solid grey;
-   
+  
 }
-
 
 </style>

@@ -1,5 +1,5 @@
 const mysql = require("mysql"); 
-
+require("dotenv").config()
 
 const db = mysql.createConnection({
 
@@ -7,9 +7,9 @@ const db = mysql.createConnection({
 
     database: "groupomania", 
  
-    user: "root", 
+    user: process.env.SQL_USER, 
  
-    password: "" 
+    password: process.env.SQL_PASSWORD
  
   });
   db.connect((err) => {
