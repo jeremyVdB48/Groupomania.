@@ -1,3 +1,5 @@
+ <!-- page inscription -->
+
 <template>
     <div>
         <navbarconnexion></navbarconnexion>

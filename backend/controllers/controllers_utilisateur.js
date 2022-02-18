@@ -76,11 +76,12 @@ exports.inscription = (req, res) => {
 
 };
 
-// connexion au compte avec utilisation de bcrypt(compare) et utilisation de jsonwebtoken
+// connexion au compte avec utilisation de bcrypt(compare) et utilisation de jsonwebtoken pour créer un jeton unique
 exports.connexion = (req, res) => {    
     Utilisateur.query(`SELECT * FROM utilisateurs WHERE pseudo_utilisateur = '${req.body.pseudo_utilisateur}'`,(err, result) => {       
         if (result.length > 0 ){
-            bcrypt.compare(req.body.password_utilisateur, result[0].password_utilisateur).then((valid) => {
+            bcrypt.compare(req.body.password_utilisateur, result[0].password_utilisateur)
+            .then(valid => {
                 if(!valid ){
                     return res.status(400).json({message:"Mot de passe invalide !"})
                 }else
@@ -89,7 +90,7 @@ exports.connexion = (req, res) => {
                     username: result[0].pseudo_utilisateur,
                     token: jwt.sign(
                         {userId: result[0].id_utilisateur},
-                        'SUPER_MOT_DE_PASSE',
+                        'process.env.SECRET_TOKEN',
                         { expiresIn: '24h'}
                     )
                 })

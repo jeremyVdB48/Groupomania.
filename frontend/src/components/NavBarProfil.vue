@@ -1,12 +1,14 @@
+<!-- navbar de la page profil  -->
+
 <template>
 <div>
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <button @click="SuppMembre()" class="btn btn-outline-danger btn-lg m-3 mb-0" >Se désinscrire</button> 
-         <button @click="$router.push('/')" class="btn btn-outline-danger btn-lg m-3 mb-0" >Retour <b-icon-arrow-counterclockwise></b-icon-arrow-counterclockwise></button>
+        <button @click="SuppMembre()" class="btn btn-outline-danger btn-lg m-3 mb-0" >Se désinscrire</button> <!--  au click du button on appel la fonction pour supprimer l'utilisateur  -->
+         <button @click="$router.push('/')" class="btn btn-outline-danger btn-lg m-3 mb-0" >Retour <b-icon-arrow-counterclockwise></b-icon-arrow-counterclockwise></button> <!-- au click du button on retourne sur la page de chat  -->
     </div>
     <div>
 
-        <p class="h2 text-center">Bienvenue sur ton profil : {{data.username}}</p>
+        <p class="h2 text-center">Bienvenue sur ton profil : {{data.username}}</p> <!-- {{}} syntaxe " Mustache " liaison avec mon objet data recuperè avec axios  -->
         
     </div>
 </div>
@@ -29,9 +31,9 @@ export default {
             userId: ""
        } 
     },
-
+// recuperation des infos de l'utilisateur avec axios
 mounted() {
-        let data = JSON.parse(this.$localStorage.get("utilisateur"));
+        let data = JSON.parse(this.$localStorage.get("utilisateur")); // recuperation dans mon local storage des infos utilisateur pour recuperer l'id et s'en servir pour la requete axios.get
         axios
             .get(`http://localhost:5000/api/utilisateur/recupOneMembre/${data.userId}`)
                 .then(reponse => {
@@ -41,6 +43,7 @@ mounted() {
                 .catch(error => console.log(error))
 },
 
+// ajout dans methods d'une fonction pour supprimer un utilisateur
 methods: {
 
     SuppMembre() {

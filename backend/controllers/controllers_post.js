@@ -3,19 +3,88 @@ const Post = require("../connexionSQL");
 
 ///////////////////////////////////// MESSAGES /////////////////////////////////////////////
        
-// recuperation de tous les messages
+// recuperation de tous les messages et partage que l'on place dans un tableau
+// SELECT me permet de recup les infos voulue 
+// FROM selectionne les tables d'ou viennent les infos
+// WHERE specifie une condition ici l'id utilisateur doit etre egal à l'id utilisateur du post
 exports.getAllPost = (req, res) => {
-    let recupAll = 'SELECT * FROM posts'
-        Post.query(recupAll, (err, result) => {                  
+
+    let tableauPartage = []
+
+    let selection = `SELECT posts.id_post, posts.id_utilisateur_post, posts.texte_post, posts.date_post,
+    utilisateurs.pseudo_utilisateur
+    FROM posts, utilisateurs
+    WHERE utilisateurs.id_utilisateur = posts.id_utilisateur_post `
+
+    Post.query(selection, (err, result) => {
+        if (err) {
+            return res.status(400).json(err)         
+        };
+        if(result.length == 0 ) {
+            return res.status(404).json({message: "Aucune publication !"})
+        }
+        // utilisation de forEach pour iterer sur le tableau
+        result.forEach(element => {
+            let pull = {
+
+                partageId: null,
+
+                idPost: element.id_post,
+
+                idUtilisateurPost: element.id_utilisateur_post,
+
+                textePost: element.texte_post,
+
+                datePost: element.date_post,
+
+                pseudoUtilisateur: element.pseudo_utilisateur,
+
+                type: "Post"
+            }
+            tableauPartage.push(pull)
+        });
+        // AND ici permet de rajouter une 3 eme condition a WHERE
+        let selectionPartage = `SELECT partage_post.*, partage_post.id_partage, partage_post.id_post_partage,
+        utilisateurs.pseudo_utilisateur,
+        posts.texte_post
+        FROM partage_post, utilisateurs, posts
+        WHERE partage_post.id_utilisateur_partage = utilisateurs.id_utilisateur
+        AND partage_post.id_post_partage = posts.id_post
+            `
+        Post.query(selectionPartage, (err,result) => {
             if (err) {
-                return res.status(400).json(err)
-            } else       
-                return res.status(201).json(result)
-           
-        
+                return res.status(400).json(err)         
+            };
+
+            result.forEach(element => {
+                let pull = {
+                    partageId: element.id_partage,
+
+                    idPost: element.id_post_partage,
+
+                    idUtilisateurPost: element.id_utilisateur_partage,
+
+                    textePost: element.texte_post,
+
+                    datePost: element.date_partage_post,
+
+                    pseudoUtilisateur: element.pseudo_utilisateur,
+
+                    type: "Partage"
+                }
+                tableauPartage.push(pull)
+            });
+
+            return res.status(200).json(tableauPartage)// si tous fonctionne on retourne le tableauPartage
+        });    
     })
+    
 };
 // nouveau message
+// INSERT permet de rajouter des données ici dans posts
+// VALUES specifie les valeurs à ajouter
+// NULL valeur inconnue ici l'id du post qui sera donnée par la suite par ma base de donnée ( auto increment )
+// NOW() permet de retourner la date et heure du systeme
 exports.createPost = (req, res) => {
     let requete = `INSERT INTO posts VALUES  (NULL, "${req.body.texte_post}", NOW(), ${req.body.id_utilisateur_post})`
         Post.query(requete, (err, result) => {
@@ -39,6 +108,7 @@ exports.getOnePost = (req, res) => {
 };
 
 // supprime un message
+// DELETE permet de supprimer des données ici on supprime par l'id du post grace a req.params.id
 exports.deletePost = (req, res) => {
     let supprime = `DELETE FROM posts WHERE id_post = ("${req.params.id}")`
         Post.query( supprime ,(err, result) => {
@@ -62,6 +132,8 @@ exports.getUsersPosts = (req, res) => {
 };
 
 // modifier un post 
+// UPDATE permet de modifier ici on modifie un post
+// SET est avec UPDATE pour spécifier les colonnes et les valeurs qui doivent être mises à jour dans une table
 exports.modifyPost = (req, res) => {
     let modifier = `UPDATE posts SET texte_post = "${req.body.texte_post}" WHERE id_post = ${req.params.id}`
         Post.query(modifier, (err, result) => {
@@ -74,7 +146,7 @@ exports.modifyPost = (req, res) => {
 
 ///////////////////////////////// COMMENTAIRE DE POST /////////////////////////////////////////////
 
-// commentaire
+// nouveau commentaire
 exports.commentaire =(req, res) => {
     let comment = `INSERT INTO commentaire_post VALUES (NULL, ${req.body.id_utilisateur}, ${req.params.id}, NOW(), "${req.body.commentaire}")`
         Post.query(comment, (err, result) => {
@@ -131,3 +203,32 @@ exports.recupAllCommentOnePost =(req, res) => {
     })
 
 };
+
+//////////////////////////////// PARTAGE DE POST //////////////////////////////
+
+// partage de post
+exports.partage =(req, res) => {
+    let partages = `INSERT INTO partage_post VALUES (NULL, ${req.body.id_utilisateur_post}, ${req.params.id}, NOW())`
+    Post.query(partages, (err, result) => {
+        if (err) {
+            return res.status(400).json(err)         
+        }else
+            return res.status(201).json({message: "Partage réussi !"})
+    })
+}
+
+// recuperation d'un partage
+exports.recupPartage =(req, res) => {
+    let recupUnPartage = `SELECT partage_post.*, posts.texte_post
+    FROM partage_post, posts
+     WHERE posts.id_post = partage_post.id_post_partage AND partage_post.id_partage = ${req.params.id} `
+    Post.query(recupUnPartage, (err, result) => {
+        if (err) {
+            return res.status(400).json(err)         
+        }if(result.length == 0) {
+            return res.status(400).json({message: "Aucun partage éffectué"})
+        } else      
+            return res.status(201).json(result)
+    })
+}
+

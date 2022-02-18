@@ -1,4 +1,7 @@
+ <!-- body de la page profil -->
+
 <template> 
+ <!-- création d'un formulaire pour modifier les données utilisateur -->
 <div class="container">
     <div class=" card cardProfil  m-auto mt-5 p-5 text-center ">
         <h2 class=" display-6 text-center connexionCompte">Modification du profil :</h2>
@@ -40,6 +43,7 @@ export default {
     },
 
     methods: {
+        // ici on utilise put pour modifier les informations utilisateur
         Modifier() {
             axios
                 .put("http://localhost:5000/api/utilisateur/modifMembre/:id",{
@@ -47,13 +51,13 @@ export default {
                     email_utilisateur: this.email_utilisateur,
                     password_utilisateur: this.password_utilisateur
                 },
-                )
+                ) // si resultat es true on envoi le status 201 et envoi sur la page connexion
                 .then(reponse => {
                     console.log("mise a jour de votre compte réussi !");
                     if(reponse.status==201){
                         this.$router.push ("/connexion")
                     }
-                })
+                })// si resultat es false
                 .catch((error) => {
                     console.log(error);
                     console.log("Echec de la mise à jour de votre compte !");

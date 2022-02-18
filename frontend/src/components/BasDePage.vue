@@ -1,3 +1,5 @@
+<!-- création du FOOTER de mon site   -->
+
 <template>
    
         <footer>

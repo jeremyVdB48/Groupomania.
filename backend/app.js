@@ -1,13 +1,16 @@
+// importation des packages,routes et headers 
+
 const express    = require("express"); // npm install --save express
 const bodyParser = require("body-parser"); // npm install --save body-parser
 const helmet     = require("helmet"); // npm install --save helmet
 const cors       = require("cors"); // npm install --save cors
-const morgan = require("morgan")
-const routePost        = require("./routes/routes_posts");
-const routeUtilisateur = require("./routes/routes_utilisateurs");
+const morgan     = require("morgan"); // npm install morgan --dev
+
+const routePost        = require("./routes/routes_posts"); // route messages
+const routeUtilisateur = require("./routes/routes_utilisateurs"); // route utilisateurs
 
 const app = express();
-app.use(morgan("dev"))
+
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -19,6 +22,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.json()); 
 app.use(helmet());
 app.use(cors());
+app.use(morgan("dev"))
 
 //Routes
 app.use("/api/post", routePost);

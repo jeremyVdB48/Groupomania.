@@ -1,3 +1,5 @@
+ <!-- page profil -->
+
 <template>
 <div>
     <navbarprofil></navbarprofil>

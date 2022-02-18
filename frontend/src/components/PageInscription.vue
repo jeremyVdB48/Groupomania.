@@ -1,11 +1,14 @@
+ <!-- body de la page inscription  -->
+
 <template>
+ <!-- création d'un formulaire pour enregistrer les infos du nouveau membre -->
     <div class="container">
     <div class=" card cardInscription  m-auto  mt-5 p-5 text-center ">
     <h2 class=" display-6 text-center connexionCompte">Inscription :</h2>
-    <form @submit.prevent = inscrire() class=" text-center formInscription">
+    <form @submit.prevent = inscrire() class=" text-center formInscription">  <!-- @submit envoi le formulaire et .prevent annule le comportement par default(recharge la page) -->
         <div class="form-group p-2 ">
             <label for = "pseudo" class="h4">Pseudo : </label>
-            <input id = "pseudo" type="text" required pattern="[a-zA-ZÀ-ÿ\-]{3,20}" class="form-control m-auto w-50"  v-model="pseudo_utilisateur">
+            <input id = "pseudo" type="text" required pattern="[a-zA-ZÀ-ÿ\-]{3,20}" class="form-control m-auto w-50"  v-model="pseudo_utilisateur">  <!-- rajout de pattern pour rajouter des contraintes de valeur-->
         </div>
 
         <div class="form-group p-2">
@@ -42,7 +45,7 @@ export default {
 
     methods: {
         inscrire(){
-
+            // envoi(post) des informations utilisateur pour l'inscription dans la base de donnée
             axios
                 .post("http://localhost:5000/api/utilisateur/inscription",{
                     pseudo_utilisateur: this.pseudo_utilisateur,
@@ -50,13 +53,13 @@ export default {
                     password_utilisateur: this.password_utilisateur
                 },
          
-            )
+            ) // si reponse true on envoi le status 201 es on envoi sur la page connexion
             .then(reponse => {
                 console.log(reponse);
-                if(reponse.status ==201){
+                if(reponse.status == 201){
                     this.$router.push ("/connexion")
                 }
-            })
+            }) // si reponse false 
             .catch((error) => {
                 console.log(error);
                 console.log("Echec de votre inscription !");
