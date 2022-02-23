@@ -78,7 +78,10 @@ exports.inscription = (req, res) => {
 
 // connexion au compte avec utilisation de bcrypt(compare) et utilisation de jsonwebtoken pour créer un jeton unique
 exports.connexion = (req, res) => {    
-    Utilisateur.query(`SELECT * FROM utilisateurs WHERE pseudo_utilisateur = '${req.body.pseudo_utilisateur}'`,(err, result) => {       
+    Utilisateur.query(`SELECT * FROM utilisateurs WHERE pseudo_utilisateur = '${req.body.pseudo_utilisateur}'`,(err, result) => { 
+        if (result.length == 0){
+            return res.status(400).json({error: "Utilisateur inconnue !"})
+        }      
         if (result.length > 0 ){
             bcrypt.compare(req.body.password_utilisateur, result[0].password_utilisateur)
             .then(valid => {

@@ -1,7 +1,7 @@
 const express = require("express");
 const Route   = express.Router();
 
-const auth    = require("../middleware/auth")
+const auth    = require("../middleware/auth");
 const routeControllers_posts = require("../controllers/controllers_post");
 
 // Routes pour les posts
@@ -17,11 +17,12 @@ Route.post("/:id/comment", routeControllers_posts.commentaire);
 Route.get("/comments/:id", routeControllers_posts.recupAllCommentaire);
 Route.get("/comment/:id", routeControllers_posts.recupOneCommentaire);
 Route.delete("/comment/:id", routeControllers_posts.deleteCommentaire);
-Route.get("/comments/post/:id", routeControllers_posts.recupAllCommentOnePost)
+Route.get("/comments/post/:id", routeControllers_posts.recupAllCommentOnePost);
 
 // route partage de post
 Route.post("/partage/post/:id", routeControllers_posts.partage);
 Route.get("/partage/post/:id", routeControllers_posts.recupPartage);
+Route.delete("/partage/post/:id", routeControllers_posts.suppUnPartage);
 
 
 module.exports = Route;

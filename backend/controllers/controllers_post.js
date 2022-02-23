@@ -7,6 +7,7 @@ const Post = require("../connexionSQL");
 // SELECT me permet de recup les infos voulue 
 // FROM selectionne les tables d'ou viennent les infos
 // WHERE specifie une condition ici l'id utilisateur doit etre egal à l'id utilisateur du post
+// ORDER BY permet de trier les lignes dans un résultat d’une requête ici par date et DESC trie par ordre décroissant
 exports.getAllPost = (req, res) => {
 
     let tableauPartage = []
@@ -14,7 +15,8 @@ exports.getAllPost = (req, res) => {
     let selection = `SELECT posts.id_post, posts.id_utilisateur_post, posts.texte_post, posts.date_post,
     utilisateurs.pseudo_utilisateur
     FROM posts, utilisateurs
-    WHERE utilisateurs.id_utilisateur = posts.id_utilisateur_post `
+    WHERE utilisateurs.id_utilisateur = posts.id_utilisateur_post
+    ORDER BY posts.date_post DESC`
 
     Post.query(selection, (err, result) => {
         if (err) {
@@ -50,7 +52,7 @@ exports.getAllPost = (req, res) => {
         FROM partage_post, utilisateurs, posts
         WHERE partage_post.id_utilisateur_partage = utilisateurs.id_utilisateur
         AND partage_post.id_post_partage = posts.id_post
-            `
+        ORDER BY date_partage_post DESC `
         Post.query(selectionPartage, (err,result) => {
             if (err) {
                 return res.status(400).json(err)         
@@ -74,12 +76,13 @@ exports.getAllPost = (req, res) => {
                 }
                 tableauPartage.push(pull)
             });
-
+            tableauPartage.sort((a,b) => new Date(b.datePost) - new Date(a.datePost)); // La méthode sort() trie les éléments d'un tableau, dans ce même tableau, et renvoie le tableau
             return res.status(200).json(tableauPartage)// si tous fonctionne on retourne le tableauPartage
         });    
     })
     
 };
+
 // nouveau message
 // INSERT permet de rajouter des données ici dans posts
 // VALUES specifie les valeurs à ajouter
@@ -229,6 +232,17 @@ exports.recupPartage =(req, res) => {
             return res.status(400).json({message: "Aucun partage éffectué"})
         } else      
             return res.status(201).json(result)
+    })
+}
+
+// supprime un partage
+exports.suppUnPartage =(req, res) => {
+    let suppPartage = `DELETE FROM partage_post WHERE id_partage = ${req.params.id}`
+    Post.query(suppPartage, (err, result) => {
+        if (err) {
+            return res.status(400).json(err)         
+        } else      
+            return res.status(201).json({message: "Partage supprimé !"})
     })
 }
 

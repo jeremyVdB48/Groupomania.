@@ -18,7 +18,7 @@
             </div>
             
             <button type="submit" class="btn btn-danger m-4 btn-lg connecter">Se connecter</button>
-           
+            <p v-if="message_erreur" class="text-danger messErreur">Mot de passe ou utilisateur inconnue au bataillon !</p>
         </form> 
     </div>
   
@@ -34,7 +34,8 @@ export default {
    data(){
        return {
            pseudo_utilisateur: "",
-           password_utilisateur: ""         
+           password_utilisateur: "",
+           message_erreur : false         
           
        };
    }, 
@@ -68,7 +69,9 @@ export default {
                  // en cas d'echec envoi d'une erreur
                 .catch(error => {                  
                      console.log(error);
-                     console.log("Echec !");
+                     console.log("Mot de passe invalide !");
+                    //  alert("Mot de passe ou utilisateur inconnue au bataillon !")
+                    this.message_erreur = true
                 })
              
         }
@@ -80,14 +83,26 @@ export default {
 
 <style >
 
-.connexionCompte{
+.connexionCompte {
     color: #d1515a;
     
 }
-.cardConnexion{
+.cardConnexion {
     opacity: 0.9;
     box-shadow: 3px 3px 5px #afafaf;
     border-style: outset;
+}
+.messErreur {
+    animation: pulse 1.5s linear;
+}
+
+@keyframes pulse {
+
+    0%{opacity: 1;}
+    25%{opacity: 0;}
+    50%{opacity: 1;}
+    75%{opacity: 0;}
+    100%{opacity: 1;}
 }
 
 </style>

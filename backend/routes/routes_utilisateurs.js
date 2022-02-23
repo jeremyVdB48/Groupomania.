@@ -8,8 +8,8 @@ const routeControllers_utilisateurs = require("../controllers/controllers_utilis
 
 Route.get("/recupAllMembres", routeControllers_utilisateurs.recupAllMembres);
 Route.get("/recupOneMembre/:id", routeControllers_utilisateurs.recupOneMembre);
-Route.put("/modifMembre/:id", auth, routeControllers_utilisateurs.modifMembre);
-Route.delete("/suppMembre/:id", routeControllers_utilisateurs.suppMembre);
+Route.put("/modifMembre/:id", routeControllers_utilisateurs.modifMembre);
+Route.delete("/suppMembre/:id",auth, routeControllers_utilisateurs.suppMembre);
 Route.post("/connexion", routeControllers_utilisateurs.connexion);
 Route.post("/inscription", routeControllers_utilisateurs.inscription);
 

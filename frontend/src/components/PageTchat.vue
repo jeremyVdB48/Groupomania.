@@ -4,17 +4,28 @@
     
     <div id="chat"> 
         <!-- création d'un formulaire pour l'envoi de message  -->
-        <h2 class="display-6 text-center m-4">Bienvenue sur le chat Groupomania : <span class="titrePseudo">{{data.username}}</span></h2>
+        <h2 class="display-6 text-center m-4">Bienvenue sur le chat Groupomania : <br> <span class="titrePseudo">{{data.username}}</span></h2>
         <form @submit.prevent = EnvoiPost() class="form-group  mx-auto w-75 textarea">
             <label for="Textarea1" class="h4">Message :</label>
-            <textarea class="form-control " id="Textarea1" rows="3" v-model="texte_post" placeholder="Ecrit ton petit message ..." required></textarea> 
+            <textarea class="form-control shadow-lg" id="Textarea1" rows="3" v-model="texte_post" placeholder="Ecrit ton petit message ..." required></textarea> 
             <button type="submit" class="btn btn-danger mt-2 mb-4 btn-lg envoyer" >Envoyer !</button>
         </form> 
 
             <!-- recuperation du tableau pour afficher mes données -->
-            <div class="card cardPost mx-auto mb-4 p-2 text-primary d-flex w-75 "  v-bind:key="index" v-for="(post, index) in msg.slice().reverse()">
-            <p class="text-primary">Message n° : {{post.idPost}}<br> écrit le {{post.datePost | formatDate}} <br> par {{post.pseudoUtilisateur}}</p>
-            <p class="text-dark">{{post.textePost}}</p>
+            <div v-if="msg == '' " class="text-center display-6">Il n'y a aucun post pour le moment ! <br>Fait toi plaisir ! <br>Et écrit un petit message.</div>
+            <div class="card cardPost shadow-lg mx-auto mb-4 p-2 text-primary d-flex w-75 "  v-bind:key="index" v-for="(post, index) in msg">
+
+            <div >
+                <p> Message n° : {{post.idPost}}</p>
+                <div v-if="post.type == 'Partage'">Partagé le :{{post.datePost | formatDate }} <br> par {{post.pseudoUtilisateur}}
+                <button :data-id ="post.partageId" v-on:click ="suppPartage($event)" type="submit" class="btn btn-link text-danger">Supprime le partage</button>
+                </div>
+            </div>    
+            <div>
+            <p v-if="post.type == 'Post'">Ecrit le : {{post.datePost | formatDate}} <br> par {{post.pseudoUtilisateur}}</p>
+            </div>
+            <p class="text-dark">{{post.textePost}}</p> 
+            
     
             <!-- bouton supprimer avec condition seul l'admin ou le createur du post peuvent l'effacer -->
             <div v-if="post.idUtilisateurPost == parseInt(data.userId) || parseInt(data.userId) == 19" class="col-md-12">                
@@ -26,7 +37,7 @@
                <button :data-id="post.idPost" v-on:click ="commentMessage($event)"  type="submit" class="btn btn-outline-primary btn-rounded waves-effect col-md-6 " >Voir les commentaires  <b-icon icon="chat-left-dots"></b-icon></button>
                <button :data-id="post.idPost" v-on:click ="partage($event)" type="submit" class="btn btn-outline-success btn-rounded waves-effect col-md-6">Partage <b-icon icon="arrow-up-square"></b-icon></button>
             </div>
-
+                
                 <!-- creation d'un formulaire pour l'envoi de commentaire -->
                  <div>
                     <form @submit.prevent  class="form-group mx-auto w-75">
@@ -96,7 +107,7 @@ window:()=>window,
                 console.log("reponse api tous messages");
                 console.log(reponse);
                 this.msg = reponse.data;
-             
+            
             })
             .catch((error) => {
                 console.log(error);
@@ -118,9 +129,6 @@ window:()=>window,
 
 }, 
      
-
-
-
    mounted() {          
 // recuperation de l' utilisateur //////////////////////////////
 
@@ -151,15 +159,11 @@ window:()=>window,
 // envoyer un message //////////////////////////////////////////////
     methods: {
        EnvoiPost() {   
-
-           
-                   
+                  
             axios
                 .post("http://localhost:5000/api/post",{
                    texte_post: this.texte_post,
-                   id_utilisateur_post: this.data.userId ,
-                              
-                    
+                   id_utilisateur_post: this.data.userId ,                   
                 },
                 )
                 .then(reponse => {                
@@ -204,7 +208,8 @@ window:()=>window,
             let idPost = item.target.getAttribute("data-id")
             let token = this.data.token
             console.log(this.data.token);
-           
+
+          if (confirm("Êtes-vous sûr de vouloir supprimer ce message ?")) {
                axios
                 .delete(`http://localhost:5000/api/post/${idPost} `, 
 
@@ -223,9 +228,8 @@ window:()=>window,
                 })
                 .catch((error) => {
                             console.log(error);
-                           alert ("Votre message n'a pas pu être supprimé car il y a un ou plusieurs commentaires !")
                 })
-              
+         }      
                    
         },
 
@@ -254,7 +258,8 @@ window:()=>window,
         SupprimeCommentaire(ITem) {
 
              let iDPost = ITem.target.getAttribute("data-ids")
-           
+
+             if (confirm("Êtes-vous sûr de vouloir supprimer ce commentaire ?")) {
                axios
                 .delete(`http://localhost:5000/api/post/comment/${iDPost} `)              
                 .then(reponse => {
@@ -267,7 +272,7 @@ window:()=>window,
                             console.log(error);
                             console.log("Votre commentaire n'a pas pu être supprimé !");
                 })
-
+             }
         },
 
     // partage un post
@@ -290,11 +295,26 @@ window:()=>window,
                             console.log("Votre partage n'a pas fonctionné !");
                 })
 
-        }
-      
+        },
 
-    }
+    // supprime un partage
+    suppPartage(i) {
+        let id = i.target.getAttribute("data-id")
 
+        axios
+            .delete(`http://localhost:5000/api/post/partage/post/${id}`)
+            .then(reponse => {
+                    console.log("Partage supprimé !");
+                    console.log(reponse);
+                    location.reload();
+
+                })
+                .catch((error) => {
+                            console.log(error);
+                            console.log("Votre partage n'a pas pu être supprimé !");
+                })
+    }}
+    
 }
 </script>
 
@@ -306,7 +326,6 @@ window:()=>window,
     color: blue;
 }
 .cardPost{
-    box-shadow: 3px 3px 5px #afafaf;
     font-family: 'Dancing Script', cursive;
     font-size: 20px;
     border-style: outset;
@@ -325,8 +344,7 @@ window:()=>window,
 
 #Textarea1{
     font-family: 'Dancing Script', cursive;
-    font-size: 20px;
-    box-shadow: 3px 3px 5px #afafaf;
+    font-size: 20px;  
     border-style: outset;
 }
 

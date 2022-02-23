@@ -8,7 +8,7 @@
     </div>
     <div>
 
-        <p class="h2 text-center">Bienvenue sur ton profil : {{data.username}}</p> <!-- {{}} syntaxe " Mustache " liaison avec mon objet data recuperè avec axios  -->
+        <p class="h2 text-center">Bienvenue sur ton profil : <span class="usernameP">{{data.username}}</span></p> <!-- {{}} syntaxe " Mustache " liaison avec mon objet data recuperè avec axios  -->
         
     </div>
 </div>
@@ -49,10 +49,16 @@ methods: {
     SuppMembre() {
         
         let data = JSON.parse(this.$localStorage.get("utilisateur"));
-         if(confirm("Suppression du compte ?")){
+        console.log(data);
+        console.log(this.data.token);
+        //  confirm("Suppression du compte ?")
             axios.
-                delete(`http://localhost:5000/api/utilisateur/suppMembre/${data.userId}`,{
-                    
+                delete(`http://localhost:5000/api/utilisateur/suppMembre/${data.userId}`,
+                {
+                headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Bearer ${data.token}`
+                        } 
                 })                              
                 .then(reponse => {
                     console.log(reponse);
@@ -60,7 +66,7 @@ methods: {
                     this.$router.push("/connexion");
                 })
                 .catch(error => console.log(error))
-        }
+        
      }
 }
 
@@ -69,6 +75,11 @@ methods: {
 
 
 <style>
-
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Quintessential&display=swap');
+.usernameP{
+    font-family: 'Dancing Script', cursive;
+    color: blue;
+    font-size: 40px;
+}
 
 </style>
