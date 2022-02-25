@@ -5,8 +5,8 @@
 <div class="container">
     <div class=" card cardProfil  m-auto mt-5 p-5 text-center ">
         <h2 class=" display-6 text-center connexionCompte">Modification du profil :</h2>
-        <form class=" text-center">
-            <div @submit.prevent = Modifier() class="form-group p-2 ">
+        <form @submit.prevent = Modifier() class=" text-center">
+            <div  class="form-group p-2 ">
                 <label for = "pseudo" class="h4">Pseudo : </label>
                 <input id = "pseudo" type="text" required pattern="[a-zA-ZÀ-ÿ\-]{3,20}" class="form-control m-auto w-50" v-model="pseudo_utilisateur">
             </div>
@@ -45,18 +45,28 @@ export default {
     methods: {
         // ici on utilise put pour modifier les informations utilisateur
         Modifier() {
+
+             let data = JSON.parse(this.$localStorage.get("utilisateur"));
+    console.log(data);
             axios
-                .put("http://localhost:5000/api/utilisateur/modifMembre/:id",{
+                .put(`http://localhost:5000/api/utilisateur/modifMembre/${data.userId}`,{
                     pseudo_utilisateur: this.pseudo_utilisateur,
                     email_utilisateur: this.email_utilisateur,
                     password_utilisateur: this.password_utilisateur
                 },
+                 { 
+                 headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Bearer ${data.token}`
+                        }  
+                  }      
                 ) // si resultat es true on envoi le status 201 et envoi sur la page connexion
                 .then(reponse => {
                     console.log("mise a jour de votre compte réussi !");
-                    if(reponse.status==201){
-                        this.$router.push ("/connexion")
-                    }
+                    console.log(reponse);
+                    // if(reponse.status==201){
+                         this.$router.push ("/connexion")
+                    // }
                 })// si resultat es false
                 .catch((error) => {
                     console.log(error);

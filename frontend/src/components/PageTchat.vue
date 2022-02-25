@@ -18,7 +18,7 @@
             <div >
                 <p> Message n° : {{post.idPost}}</p>
                 <div v-if="post.type == 'Partage'">Partagé le :{{post.datePost | formatDate }} <br> par {{post.pseudoUtilisateur}}
-                <button :data-id ="post.partageId" v-on:click ="suppPartage($event)" type="submit" class="btn btn-link text-danger">Supprime le partage</button>
+                <button :data-id ="post.partageId" v-if="post.idUtilisateurPost == parseInt(data.userId) || data.administrateur == 1 " v-on:click ="suppPartage($event)" type="submit" class="btn btn-link text-danger">Supprime le partage</button>
                 </div>
             </div>    
             <div>
@@ -26,9 +26,8 @@
             </div>
             <p class="text-dark">{{post.textePost}}</p> 
             
-    
-            <!-- bouton supprimer avec condition seul l'admin ou le createur du post peuvent l'effacer -->
-            <div v-if="post.idUtilisateurPost == parseInt(data.userId) || parseInt(data.userId) == 19" class="col-md-12">                
+            <!-- bouton supprimer avec condition seul un administrateur ou le createur du post peuvent l'effacer -->
+            <div v-if="post.idUtilisateurPost == parseInt(data.userId) || data.administrateur == 1" class="col-md-12">                
                 <button :data-id="post.idPost" v-on:click="SupprimeMessage($event)" type="submit" class="btn btn-outline-danger btn-rounded waves-effect col-md-6">Supprimer <b-icon icon="trash"></b-icon></button>               
             </div>
 
@@ -53,7 +52,7 @@
                     <div v-for="commentaire in Commentaires.slice().reverse()" v-bind:key="commentaire.commentaireId">
                         <div  v-if="commentaire.id_post == post.idPost">                                
                             <div class="m-2">Commenté le {{commentaire.date_commentaire_post | formatDate}} 
-                                <button v-if="post.idUtilisateurPost == parseInt(data.userId) || parseInt(data.userId) == 19 " :data-ids="commentaire.id_commentaire" v-on:click="SupprimeCommentaire($event)" type="submit" class="btn btn-sm btn-outline-danger btn-rounded waves-effect">Supprimer</button>
+                                <button v-if="commentaire.id_utilisateur == parseInt(data.userId) || data.administrateur == 1 " :data-ids="commentaire.id_commentaire" v-on:click="SupprimeCommentaire($event)" type="submit" class="btn btn-sm btn-outline-danger btn-rounded waves-effect">Supprimer</button>
                                 <p class="text-dark">{{commentaire.commentaire}}</p> 
                                 
                                                             
@@ -87,9 +86,7 @@ export default {
             comment: "",
             info : "",
             msg : [],
-            username : "",
-                   
-            
+            username : "",           
         }
             
     },
@@ -100,9 +97,18 @@ window:()=>window,
 },
         
  // recuperation de tous les messages ////////////////////////////////
- created() {       
+ created() {   
+        let data = JSON.parse(this.$localStorage.get("utilisateur"));
+
         axios
-            .get("http://localhost:5000/api/post")
+            .get("http://localhost:5000/api/post", {
+
+                 headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Bearer ${data.token}`
+                        } 
+          
+            })
             .then(reponse => {
                 console.log("reponse api tous messages");
                 console.log(reponse);
@@ -130,23 +136,18 @@ window:()=>window,
 }, 
      
    mounted() {          
-// recuperation de l' utilisateur //////////////////////////////
-
-            // let data = JSON.parse(this.$localStorage.get("utilisateur"));
-            // axios
-            //     .get(`http://localhost:5000/api/utilisateur/recupOneMembre/${data.userId}`)
-            //     .then(reponse => {
-            //         console.log("api info utilisateur !");
-            //         console.log(data);
-            //         this.utilisateur = reponse.data
-            //     })
-            //     .catch(error => console.log(error))
-
 
 // recuperation des commentaires /////////////////////////////////
-    
+            let data = JSON.parse(this.$localStorage.get("utilisateur"));
+            
             axios
-                .get("http://localhost:5000/api/post/comments/post")
+                .get("http://localhost:5000/api/post/comments/post",{
+
+                   headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Bearer ${data.token}`
+                        }  
+                })
                 .then(reponse => {
                     console.log("commentaires");
                     console.log(reponse);
@@ -159,12 +160,20 @@ window:()=>window,
 // envoyer un message //////////////////////////////////////////////
     methods: {
        EnvoiPost() {   
-                  
+
+            let data = JSON.parse(this.$localStorage.get("utilisateur"));
+                 
             axios
                 .post("http://localhost:5000/api/post",{
                    texte_post: this.texte_post,
                    id_utilisateur_post: this.data.userId ,                   
                 },
+                { 
+                 headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Bearer ${data.token}`
+                        }  
+                  }      
                 )
                 .then(reponse => {                
                     console.log(reponse);
@@ -179,16 +188,21 @@ window:()=>window,
       
 // envoyer un commentaire ////////////////////////////////////////////
         EnvoiCommentaire(itemS) {
-
+                   let data = JSON.parse(this.$localStorage.get("utilisateur")); 
                    let idPost = itemS.target.getAttribute("data-id")
                     
                     axios
                         .post(`http://localhost:5000/api/post/${idPost}/comment`, {
                             
                             id_utilisateur: this.data.userId,                           
-                            commentaire: this.commentaire
-                            
-                        }
+                            commentaire: this.commentaire                            
+                        },
+                        { 
+                        headers: {
+                                'Content-type': 'application/json',
+                                Authorization: `Bearer ${data.token}`
+                                }  
+                        }      
                         )
                         .then(reponse => {                
                         console.log(reponse);
@@ -204,22 +218,19 @@ window:()=>window,
         },
 // supprimer un message //////////////////////////////////////////////
         SupprimeMessage(item) {
-            
-            let idPost = item.target.getAttribute("data-id")
-            let token = this.data.token
-            console.log(this.data.token);
+
+            let data = JSON.parse(this.$localStorage.get("utilisateur"));
+            let idPost = item.target.getAttribute("data-id");
 
           if (confirm("Êtes-vous sûr de vouloir supprimer ce message ?")) {
                axios
                 .delete(`http://localhost:5000/api/post/${idPost} `, 
-
-                 {
+                {           
                        headers: {
                          "Content-type": "application/json",
-                         Authorization: `Bearer${token}` 
-                                }
-                 }
-                )               
+                         Authorization: `Bearer ${data.token}`
+                                }                
+                })               
                 .then(reponse => {
                     console.log("Message supprimé !");
                     console.log(reponse);
@@ -236,7 +247,7 @@ window:()=>window,
 // recuperation des commentaire d'un message //////////////////////
         commentMessage(Item) {
             
-            let idPost = Item.target.getAttribute("data-id")
+            let idPost = Item.target.getAttribute("data-id");
             console.log(idPost);
 
             axios
@@ -257,11 +268,19 @@ window:()=>window,
 // supprime un commentaire ////////////////////////////////////////////
         SupprimeCommentaire(ITem) {
 
-             let iDPost = ITem.target.getAttribute("data-ids")
+             let iDPost = ITem.target.getAttribute("data-ids");
+             let data = JSON.parse(this.$localStorage.get("utilisateur"));
+             console.log(data.token);
 
              if (confirm("Êtes-vous sûr de vouloir supprimer ce commentaire ?")) {
                axios
-                .delete(`http://localhost:5000/api/post/comment/${iDPost} `)              
+                .delete(`http://localhost:5000/api/post/comment/${iDPost} `,
+                {
+                     headers: {
+                         "Content-type": "application/json",
+                         Authorization: `Bearer ${data.token}`
+                                }                
+                })              
                 .then(reponse => {
                     console.log("Commentaire supprimé !");
                     console.log(reponse);
@@ -278,12 +297,20 @@ window:()=>window,
     // partage un post
         partage(ITEm) {
 
-            let idPoST = ITEm.target.getAttribute("data-id")
+            let idPoST = ITEm.target.getAttribute("data-id");
+            let data = JSON.parse(this.$localStorage.get("utilisateur"));
 
             axios
                 .post(`http://localhost:5000/api/post/partage/post/${idPoST}`, {
                     id_utilisateur_post: this.data.userId
-                })
+                },
+                     { 
+                        headers: {
+                            'Content-type': 'application/json',
+                            Authorization: `Bearer ${data.token}`
+                                }  
+                        }      
+                )
                 .then(reponse => {
                     console.log("Fonction partage !!");
                     console.log(reponse);
@@ -291,18 +318,27 @@ window:()=>window,
 
                 })
                 .catch((error) => {
-                            console.log(error);
-                            console.log("Votre partage n'a pas fonctionné !");
+                        console.log(error);
+                        console.log("Votre partage n'a pas fonctionné !");
                 })
 
         },
 
     // supprime un partage
     suppPartage(i) {
-        let id = i.target.getAttribute("data-id")
 
+        let id = i.target.getAttribute("data-id");
+        let data = JSON.parse(this.$localStorage.get("utilisateur"));
+
+         if (confirm("Êtes-vous sûr de vouloir supprimer ce partage ?")) {
         axios
-            .delete(`http://localhost:5000/api/post/partage/post/${id}`)
+            .delete(`http://localhost:5000/api/post/partage/post/${id}`,
+            {
+                  headers: {
+                                'Content-type': 'application/json',
+                                Authorization: `Bearer ${data.token}`
+                                }  
+            })
             .then(reponse => {
                     console.log("Partage supprimé !");
                     console.log(reponse);
@@ -314,6 +350,7 @@ window:()=>window,
                             console.log("Votre partage n'a pas pu être supprimé !");
                 })
     }}
+    }
     
 }
 </script>

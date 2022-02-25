@@ -77,7 +77,7 @@ exports.getAllPost = (req, res) => {
                 tableauPartage.push(pull)
             });
             tableauPartage.sort((a,b) => new Date(b.datePost) - new Date(a.datePost)); // La méthode sort() trie les éléments d'un tableau, dans ce même tableau, et renvoie le tableau
-            return res.status(200).json(tableauPartage)// si tous fonctionne on retourne le tableauPartage
+            return res.status(201).json(tableauPartage)// si tous fonctionne on retourne le tableauPartage
         });    
     })
     
@@ -106,20 +106,22 @@ exports.getOnePost = (req, res) => {
             if (err) {
                 return res.status(400).json(err)
             }else
-                return res.status(201).json(result)
+                return res.status(200).json(result)
     })
 };
 
 // supprime un message
 // DELETE permet de supprimer des données ici on supprime par l'id du post grace a req.params.id
 exports.deletePost = (req, res) => {
-    let supprime = `DELETE FROM posts WHERE id_post = ("${req.params.id}")`
-        Post.query( supprime ,(err, result) => {
+
+    let supprime = `DELETE FROM posts WHERE id_post = ? `
+
+        Post.query( supprime , req.params.id, (err, result) => {
             if (err) {
                 return res.status(400).json(err)         
             }else
                 return res.status(201).json({ message: 'Votre post à été supprimé !'})
-    })       
+            })   
 };
 
 // recuperation des posts par utilisateur
@@ -129,7 +131,7 @@ exports.getUsersPosts = (req, res) => {
             if (err) {
                 return res.status(400).json(err)         
             }else
-                return res.status(201).json(result)
+                return res.status(200).json(result)
     })
     
 };
@@ -138,13 +140,26 @@ exports.getUsersPosts = (req, res) => {
 // UPDATE permet de modifier ici on modifie un post
 // SET est avec UPDATE pour spécifier les colonnes et les valeurs qui doivent être mises à jour dans une table
 exports.modifyPost = (req, res) => {
-    let modifier = `UPDATE posts SET texte_post = "${req.body.texte_post}" WHERE id_post = ${req.params.id}`
-        Post.query(modifier, (err, result) => {
-            if (err) {
-                return res.status(400).json(err)         
-            }else
-                return res.status(201).json({ message: "message modifié avec succés !"})
-        })
+    let recupOne = `SELECT * FROM posts WHERE id_post = ("${req.params.id}")`   
+    Post.query( recupOne, (err, result) => {
+        if (err) {
+            return res.status(400).json(err)
+        }else{
+            if(result[0].id_utilisateur_post == req.token.userId) {
+                let modifier = `UPDATE posts SET texte_post = "${req.body.texte_post}" WHERE id_post = ${req.params.id}`
+                Post.query(modifier, (err, result) => {
+                    if (err) {
+                        return res.status(400).json(err)         
+                    }else
+                        return res.status(201).json({ message: "message modifié avec succés !"})
+                })
+            }else{
+                res.status(401).json({message: "aucun droit "})
+            }
+        }
+    })
+
+    
 };
 
 ///////////////////////////////// COMMENTAIRE DE POST /////////////////////////////////////////////
@@ -167,7 +182,7 @@ exports.recupAllCommentaire =(req, res) => {
             if (err) {
                 return res.status(400).json(err)         
             }else
-                return res.status(201).json(result)
+                return res.status(200).json(result)
         })
 };
 
@@ -178,7 +193,7 @@ exports.recupOneCommentaire =(req, res) => {
             if (err) {
                 return res.status(400).json(err)         
             }else
-                return res.status(201).json(result)
+                return res.status(200).json(result)
         })
 }
 
@@ -202,7 +217,7 @@ exports.recupAllCommentOnePost =(req, res) => {
         if (err) {
             return res.status(400).json(err)         
         }else
-            return res.status(201).json(result)
+            return res.status(200).json(result)
     })
 
 };
@@ -231,7 +246,7 @@ exports.recupPartage =(req, res) => {
         }if(result.length == 0) {
             return res.status(400).json({message: "Aucun partage éffectué"})
         } else      
-            return res.status(201).json(result)
+            return res.status(200).json(result)
     })
 }
 

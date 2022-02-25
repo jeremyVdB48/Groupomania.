@@ -51,7 +51,7 @@ methods: {
         let data = JSON.parse(this.$localStorage.get("utilisateur"));
         console.log(data);
         console.log(this.data.token);
-        //  confirm("Suppression du compte ?")
+        if (confirm("Suppression du compte ?")){
             axios.
                 delete(`http://localhost:5000/api/utilisateur/suppMembre/${data.userId}`,
                 {
@@ -61,12 +61,13 @@ methods: {
                         } 
                 })                              
                 .then(reponse => {
+                    console.log("Un membre de perdu dix de retrouvés !");
                     console.log(reponse);
                     localStorage.clear();
                     this.$router.push("/connexion");
                 })
                 .catch(error => console.log(error))
-        
+         }
      }
 }
 
