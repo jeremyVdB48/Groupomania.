@@ -27,7 +27,7 @@
             <p class="text-dark">{{post.textePost}}</p> 
             
             <!-- bouton supprimer avec condition seul un administrateur ou le createur du post peuvent l'effacer -->
-            <div v-if="post.idUtilisateurPost == parseInt(data.userId) || data.administrateur == 1" class="col-md-12">                
+            <div v-if="post.idUtilisateurPost == parseInt(data.userId) || data.administrateur == 1" class="col-md-12"> 
                 <button :data-id="post.idPost" v-on:click="SupprimeMessage($event)" type="submit" class="btn btn-outline-danger btn-rounded waves-effect col-md-6">Supprimer <b-icon icon="trash"></b-icon></button>               
             </div>
 

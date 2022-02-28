@@ -8,7 +8,7 @@ const routeControllers_posts = require("../controllers/controllers_post");
 Route.get("/", routeControllers_posts.getAllPost);
 Route.post("/", auth, routeControllers_posts.createPost);
 Route.get("/:id", routeControllers_posts.getOnePost);
-Route.delete("/:id", auth, routeControllers_posts.deletePost);
+Route.delete("/:id",auth, routeControllers_posts.deletePost);
 Route.get("/user:id/posts", routeControllers_posts.getUsersPosts);
 Route.put("/:id", auth, routeControllers_posts.modifyPost);
 

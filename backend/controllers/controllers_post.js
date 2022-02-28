@@ -1,5 +1,5 @@
 const Post = require("../connexionSQL");
-
+const jwt = require('jsonwebtoken');
 
 ///////////////////////////////////// MESSAGES /////////////////////////////////////////////
        
@@ -112,17 +112,51 @@ exports.getOnePost = (req, res) => {
 
 // supprime un message
 // DELETE permet de supprimer des données ici on supprime par l'id du post grace a req.params.id
-exports.deletePost = (req, res) => {
+// exports.deletePost = (req, res) => {
 
+//     let supprime = `DELETE FROM posts WHERE id_post = ? `
+
+//         Post.query( supprime , req.params.id, (err, result) => {
+//             if (err) {
+//                 return res.status(400).json(err)         
+//             }else
+//                 return res.status(201).json({ message: 'Votre post à été supprimé !'})
+//             })   
+// };
+
+
+exports.deletePost = (req, res) => {
+ 
+    const token = req.headers.authorization.split(' ')[1];   
+    const decodedToken = jwt.verify(token, process.env.SECRET_TOKEN );
+    const userId = decodedToken.userId;
+    const administrateur = decodedToken.administrateur
+    let postId = req.params.id;
+
+console.log(userId);
+
+    let recupOne = `SELECT * FROM posts WHERE id_post = ?`
     let supprime = `DELETE FROM posts WHERE id_post = ? `
 
-        Post.query( supprime , req.params.id, (err, result) => {
-            if (err) {
-                return res.status(400).json(err)         
-            }else
-                return res.status(201).json({ message: 'Votre post à été supprimé !'})
-            })   
+    Post.query( recupOne, postId, (err, result) => {
+        if (userId !== result[0].id_utilisateur_post && administrateur === false) {
+            console.log("pas les droit d'effacer !");
+            return res.status(403).json({message: "Pas les droits !"})
+        }else{
+            console.log("tu peux effacer les données !");
+            Post.query( supprime , postId, (err, result) => {
+                            if (err) {
+                                return res.status(400).json(err)         
+                            }else
+                                return res.status(201).json({ message: 'Votre post à été supprimé !'})
+                            })   
+        }
+    })
+   
 };
+
+
+
 
 // recuperation des posts par utilisateur
 exports.getUsersPosts = (req, res) => {
@@ -140,25 +174,15 @@ exports.getUsersPosts = (req, res) => {
 // UPDATE permet de modifier ici on modifie un post
 // SET est avec UPDATE pour spécifier les colonnes et les valeurs qui doivent être mises à jour dans une table
 exports.modifyPost = (req, res) => {
-    let recupOne = `SELECT * FROM posts WHERE id_post = ("${req.params.id}")`   
-    Post.query( recupOne, (err, result) => {
-        if (err) {
-            return res.status(400).json(err)
-        }else{
-            if(result[0].id_utilisateur_post == req.token.userId) {
-                let modifier = `UPDATE posts SET texte_post = "${req.body.texte_post}" WHERE id_post = ${req.params.id}`
-                Post.query(modifier, (err, result) => {
-                    if (err) {
-                        return res.status(400).json(err)         
-                    }else
-                        return res.status(201).json({ message: "message modifié avec succés !"})
-                })
-            }else{
-                res.status(401).json({message: "aucun droit "})
-            }
-        }
-    })
 
+   
+        let modifier = `UPDATE posts SET texte_post = "${req.body.texte_post}" WHERE id_post = ${req.params.id}`
+            Post.query(modifier, (err, result) => {
+                if (err) {
+                    return res.status(400).json(err)         
+                }else
+                    return res.status(201).json({ message: "message modifié avec succés !"})
+            })
     
 };
 
@@ -199,13 +223,39 @@ exports.recupOneCommentaire =(req, res) => {
 
 // supprime un commentaire
 exports.deleteCommentaire =(req, res) => {
-    let suppComment = `DELETE FROM commentaire_post WHERE id_commentaire = ${req.params.id}`
-        Post.query(suppComment, (err, result) => {
-            if (err) {
-                return res.status(400).json(err)         
-            }else
-                return res.status(201).json({ message: 'Votre commentaire a été supprimé !'})
-        })
+
+    const token = req.headers.authorization.split(' ')[1];   
+    const decodedToken = jwt.verify(token, process.env.SECRET_TOKEN );
+    const userId = decodedToken.userId;
+    const administrateur = decodedToken.administrateur
+    let postId = req.params.id;
+
+    let recupOne = `SELECT * FROM commentaire_post WHERE id_commentaire = ?`
+    let suppComment = `DELETE FROM commentaire_post WHERE id_commentaire = ?`
+
+    Post.query( recupOne, postId, (err, result) => {
+        if (userId !== result[0].id_utilisateur && administrateur === false) {
+            console.log("pas les droit d'effacer !");
+            return res.status(403).json({message: "Pas les droits !"})
+        }else{
+            console.log("tu peux effacer les données !");
+            Post.query( suppComment , postId, (err, result) => {
+                            if (err) {
+                                return res.status(400).json(err)         
+                            }else
+                                return res.status(201).json({ message: 'Votre commentaire à été supprimé !'})
+                            })   
+        }
+    })
+
+
+    // let suppComment = `DELETE FROM commentaire_post WHERE id_commentaire = ${req.params.id}`
+    //     Post.query(suppComment, (err, result) => {
+    //         if (err) {
+    //             return res.status(400).json(err)         
+    //         }else
+    //             return res.status(201).json({ message: 'Votre commentaire a été supprimé !'})
+    //     })
 };
 
 // recupèration de tous les commentaires d'un seul message
@@ -252,12 +302,38 @@ exports.recupPartage =(req, res) => {
 
 // supprime un partage
 exports.suppUnPartage =(req, res) => {
-    let suppPartage = `DELETE FROM partage_post WHERE id_partage = ${req.params.id}`
-    Post.query(suppPartage, (err, result) => {
-        if (err) {
-            return res.status(400).json(err)         
-        } else      
-            return res.status(201).json({message: "Partage supprimé !"})
+
+    const token = req.headers.authorization.split(' ')[1];   
+    const decodedToken = jwt.verify(token, process.env.SECRET_TOKEN );
+    const userId = decodedToken.userId;
+    const administrateur = decodedToken.administrateur
+    let postId = req.params.id;
+
+    let recupOne = `SELECT * FROM partage_post WHERE id_partage = ?`
+    let suppPartage = `DELETE FROM partage_post WHERE id_partage = ? `
+
+    Post.query( recupOne, postId, (err, result) => {
+        if (userId !== result[0].id_utilisateur_partage && administrateur === false) {
+            console.log("pas les droit d'effacer !");
+            return res.status(403).json({message: "Pas les droits !"})
+        }else{
+            console.log("tu peux effacer les données !");
+            Post.query( suppPartage , postId, (err, result) => {
+                            if (err) {
+                                return res.status(400).json(err)         
+                            }else
+                                return res.status(201).json({ message: 'Votre partage à été supprimé !'})
+                            })   
+        }
     })
+
+
+    // let suppPartage = `DELETE FROM partage_post WHERE id_partage = ${req.params.id}`
+    // Post.query(suppPartage, (err, result) => {
+    //     if (err) {
+    //         return res.status(400).json(err)         
+    //     } else      
+    //         return res.status(201).json({message: "Partage supprimé !"})
+    // })
 }
 
