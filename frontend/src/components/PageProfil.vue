@@ -8,17 +8,17 @@
         <form @submit.prevent = Modifier() class=" text-center">
             <div  class="form-group p-2 ">
                 <label for = "pseudo" class="h4">Pseudo : </label>
-                <input id = "pseudo" type="text" required pattern="[a-zA-ZÀ-ÿ\-]{3,20}" class="form-control m-auto w-50" v-model="pseudo_utilisateur">
+                <input id = "pseudo" type="text"  class="form-control m-auto w-50" v-model="pseudo_utilisateur">
             </div>
 
             <div class="form-group p-2">
                 <label for = "email" class="h4">Email : </label>
-                <input id = "email" type="text" required pattern="[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+.[a-zA-Z.]{2,15}" class="form-control m-auto w-50 " v-model="email_utilisateur" >
+                <input id = "email" type="text"  class="form-control m-auto w-50 " v-model="email_utilisateur" >
             </div>
 
             <div class="form-group p-2">
                 <label for = "password" class="h4">Password : </label>
-                <input id = "password" type="text" required pattern="[a-zA-ZÀ-ÿ\-\0-9]{2,50}" class="form-control m-auto w-50 " v-model="password_utilisateur" >
+                <input id = "password" type="text"  class="form-control m-auto w-50 " v-model="password_utilisateur" >
             </div>
 
             <button type="submit" class="btn btn-danger m-4 btn-lg connecter">Modifier</button>

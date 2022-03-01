@@ -89,8 +89,12 @@ exports.getAllPost = (req, res) => {
 // NULL valeur inconnue ici l'id du post qui sera donnée par la suite par ma base de donnée ( auto increment )
 // NOW() permet de retourner la date et heure du systeme
 exports.createPost = (req, res) => {
-    let requete = `INSERT INTO posts VALUES  (NULL, "${req.body.texte_post}", NOW(), ${req.body.id_utilisateur_post})`
-        Post.query(requete, (err, result) => {
+    let texte = req.body.texte_post;
+    let idUtilisateur = req.body.id_utilisateur_post;
+
+    let requete = "INSERT INTO posts ( texte_post, date_post, id_utilisateur_post) VALUES  ( ?, NOW(), ?)"
+
+        Post.query(requete , [ texte , idUtilisateur] , (err, result) => {
             if (err) {
                 return res.status(400).json(err)         
             }else
@@ -101,8 +105,11 @@ exports.createPost = (req, res) => {
 };
 // recupere un message
 exports.getOnePost = (req, res) => {
-    let recupOne = `SELECT * FROM posts WHERE id_post = ("${req.params.id}")`   
-        Post.query( recupOne, (err, result) => {
+    let idPost = req.params.id
+
+    let recupOne = "SELECT * FROM posts WHERE id_post = ? " 
+
+        Post.query( recupOne, idPost , (err, result) => {
             if (err) {
                 return res.status(400).json(err)
             }else
@@ -160,8 +167,11 @@ console.log(userId);
 
 // recuperation des posts par utilisateur
 exports.getUsersPosts = (req, res) => {
-    let recup = `SELECT * FROM posts WHERE posts.id_utilisateur_post = ${req.params.id}`
-        Post.query(recup, (err, result) => {
+    let idUtilisateur = req.params.id;
+
+    let recup = " SELECT * FROM posts WHERE posts.id_utilisateur_post = ? ";
+
+        Post.query(recup , idUtilisateur , (err, result) => {
             if (err) {
                 return res.status(400).json(err)         
             }else
@@ -174,10 +184,12 @@ exports.getUsersPosts = (req, res) => {
 // UPDATE permet de modifier ici on modifie un post
 // SET est avec UPDATE pour spécifier les colonnes et les valeurs qui doivent être mises à jour dans une table
 exports.modifyPost = (req, res) => {
-
+    let texte = req.body.texte_post;
+    let idPost = req.params.id;
    
-        let modifier = `UPDATE posts SET texte_post = "${req.body.texte_post}" WHERE id_post = ${req.params.id}`
-            Post.query(modifier, (err, result) => {
+        let modifier = `UPDATE posts SET texte_post = ? WHERE id_post = ?`
+
+            Post.query(modifier,[texte , idPost] , (err, result) => {
                 if (err) {
                     return res.status(400).json(err)         
                 }else
@@ -190,8 +202,13 @@ exports.modifyPost = (req, res) => {
 
 // nouveau commentaire
 exports.commentaire =(req, res) => {
-    let comment = `INSERT INTO commentaire_post VALUES (NULL, ${req.body.id_utilisateur}, ${req.params.id}, NOW(), "${req.body.commentaire}")`
-        Post.query(comment, (err, result) => {
+    let idUtilisateur = req.body.id_utilisateur;
+    let id = req.params.id;
+    let commentaire = req.body.commentaire
+
+    let comment = `INSERT INTO commentaire_post VALUES (NULL, ? , ? , NOW() , ? )`
+
+        Post.query(comment, [idUtilisateur , id , commentaire] , (err, result) => {
             if (err) {
                 return res.status(400).json(err)         
             }else
@@ -212,8 +229,11 @@ exports.recupAllCommentaire =(req, res) => {
 
 // recuperation d'un commentaire
 exports.recupOneCommentaire =(req, res) => {
-    let recupOneComment = `SELECT * FROM commentaire_post WHERE id_commentaire = ${req.params.id}`
-        Post.query(recupOneComment, (err, result) => {
+    let idCommentaire = req.params.id;
+
+    let recupOneComment = `SELECT * FROM commentaire_post WHERE id_commentaire = ?`
+
+        Post.query(recupOneComment , idCommentaire , (err, result) => {
             if (err) {
                 return res.status(400).json(err)         
             }else
@@ -276,8 +296,12 @@ exports.recupAllCommentOnePost =(req, res) => {
 
 // partage de post
 exports.partage =(req, res) => {
-    let partages = `INSERT INTO partage_post VALUES (NULL, ${req.body.id_utilisateur_post}, ${req.params.id}, NOW())`
-    Post.query(partages, (err, result) => {
+    let idUtilisateurPost = req.body.id_utilisateur_post;
+    let id = req.params.id;
+
+    let partages = `INSERT INTO partage_post VALUES (NULL , ? , ? , NOW() )`
+
+    Post.query(partages, [idUtilisateurPost , id ] , (err, result) => {
         if (err) {
             return res.status(400).json(err)         
         }else
@@ -287,10 +311,13 @@ exports.partage =(req, res) => {
 
 // recuperation d'un partage
 exports.recupPartage =(req, res) => {
+    let id = req.params.id;
+
     let recupUnPartage = `SELECT partage_post.*, posts.texte_post
     FROM partage_post, posts
-     WHERE posts.id_post = partage_post.id_post_partage AND partage_post.id_partage = ${req.params.id} `
-    Post.query(recupUnPartage, (err, result) => {
+     WHERE posts.id_post = partage_post.id_post_partage AND partage_post.id_partage = ? `
+
+    Post.query(recupUnPartage, id ,  (err, result) => {
         if (err) {
             return res.status(400).json(err)         
         }if(result.length == 0) {

@@ -12,15 +12,11 @@ module.exports = (req, res, next) => {
     if (req.body.userId && req.body.userId !== userId) {
 
       throw 'Invalid user ID';
-      
+
     } else {
       next();
     }
 
-    //req.token = jwt.verify(token, process.env.SECRET_TOKEN ); // la fonction verify permet de decoder le token si le résultat n'est pas valide alors une erreur sera générée et protection du code avec dotenv
-    
-      //next(); // si tous fonctionne on passe l'exécution avec next()
-    
 
   } catch(e) {
     console.log(e)
