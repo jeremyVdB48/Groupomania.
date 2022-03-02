@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 
 
 app.use(bodyParser.json()); 
-app.use(helmet());
+app.use(helmet()); // Helmet aide à protéger de certaines des vulnérabilités bien connues du Web en configurant de manière appropriée des en-têtes HTTP.
 app.use(cors());
 app.use(morgan("dev"))
 

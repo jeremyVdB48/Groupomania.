@@ -1,6 +1,7 @@
 // connection a ma base de donnée SQL avec utilisation de Dotenv pour cacher mes infos 
 
 const mysql = require("mysql"); 
+
 require("dotenv").config()
 
 const db = mysql.createConnection({

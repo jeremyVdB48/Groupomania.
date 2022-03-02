@@ -8,17 +8,17 @@
     <form @submit.prevent = inscrire() class=" text-center formInscription">  <!-- @submit envoi le formulaire et .prevent annule le comportement par default(recharge la page) -->
         <div class="form-group p-2 ">
             <label for = "pseudo" class="h4">Pseudo : </label>
-            <input id = "pseudo" type="text" required pattern="[a-zA-ZÀ-ÿ\-]{3,20}" class="form-control m-auto w-50"  v-model="pseudo_utilisateur">  <!-- rajout de pattern pour rajouter des contraintes de valeur-->
+            <input id = "pseudo" type="text" required pattern="[a-zA-ZÀ-ÿ\-]{3,20}" class="form-control m-auto w-50 text-center " placeholder=" Ex : Jean " v-model="pseudo_utilisateur">  <!-- rajout de pattern pour rajouter des contraintes de valeur-->
         </div>
 
         <div class="form-group p-2">
             <label for = "email" class="h4">Email : </label>
-            <input id = "email" type="text" required pattern="[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+.[a-zA-Z.]{2,15}" class="form-control xs-col-12 m-auto w-50 "  v-model="email_utilisateur">
+            <input id = "email" type="text" required pattern="[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+.[a-zA-Z.]{2,15}" class="form-control xs-col-12 m-auto w-50 text-center" placeholder=" Ex : JeanDeLaFontaine@hotmail.fr" v-model="email_utilisateur">
         </div>
 
         <div class="form-group p-2">
             <label for = "password" class="h4">Password : </label>
-            <input id = "password" type="text" required pattern="[a-zA-ZÀ-ÿ\-\0-9]{2,50}" class="form-control m-auto w-50 "  v-model="password_utilisateur">
+            <input id = "password" type="password" required pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$" class="form-control m-auto w-50 text-center" placeholder=" Minimum huit caractères, au moins une lettre et un chiffre" v-model="password_utilisateur">
         </div>
 
         <button type="submit" class="btn btn-danger m-4 btn-lg  connecter">S'inscrire</button>
@@ -53,13 +53,12 @@ export default {
                     password_utilisateur: this.password_utilisateur
                 },
          
-            ) // si reponse true on envoi le status 201 es on envoi sur la page connexion
+            ) 
             .then(reponse => {
-                console.log(reponse);
-                if(reponse.status == 201){
-                    this.$router.push ("/connexion")
-                }
-            }) // si reponse false 
+                console.log(reponse);               
+                this.$router.push ("/connexion")
+                
+            })  
             .catch((error) => {
                 console.log(error);
                 console.log("Echec de votre inscription !");

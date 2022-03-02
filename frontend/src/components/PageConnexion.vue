@@ -9,12 +9,12 @@
         <form @submit.prevent = Verif()  class=" text-center" >
             <div class="form-group p-2 ">
                 <label for = "pseudo" class="h4">Pseudo : </label>
-                <input id = "pseudo" type="text" class="form-control m-auto w-50" required v-model="pseudo_utilisateur">  <!--required oblige l'utilisateur à entrer du texte et v-model lie les données du formulaire -->
+                <input id = "pseudo" type="text" class="form-control m-auto w-50 text-center" required v-model="pseudo_utilisateur">  <!--required oblige l'utilisateur à entrer du texte et v-model lie les données du formulaire -->
             </div>
 
             <div class="form-group p-2">
                 <label for = "password" class="h4">Password : </label>
-                <input id = "password" type="text" class="form-control m-auto w-50 " required v-model="password_utilisateur">
+                <input id = "password" type="password" class="form-control m-auto w-50 text-center" required v-model="password_utilisateur">
             </div>
             
             <button type="submit" class="btn btn-danger m-4 btn-lg connecter">Se connecter</button>
