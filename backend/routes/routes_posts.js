@@ -16,7 +16,7 @@ const routeControllers_posts_modif_message = require("../controllers/control_mes
 
 // Routes pour les messages
 Route.get("/", routeControllers_posts_tous_messages.getAllPost);
-Route.post("/", routeControllers_posts_envoi_message.createPost);
+Route.post("/", auth, routeControllers_posts_envoi_message.createPost);
 Route.get("/:id", routeControllers_posts_recup_un_message.getOnePost);
 Route.delete("/:id",auth, routeControllers_posts_supprime_message.deletePost);
 Route.get("/user:id/posts", routeControllers_posts_recup_messages_membre.getUsersPosts);

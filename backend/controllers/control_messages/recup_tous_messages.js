@@ -1,4 +1,4 @@
-const Post = require("C:/Users/vdbje/Desktop/P7/backend/connexionSQL.js");
+const Post = require("../../connexionSQL");
 
 
 // recuperation de tous les messages et partage que l'on place dans un tableau
@@ -45,7 +45,7 @@ exports.getAllPost = (req, res) => {
             }
             tableauPartage.push(pull)
         });
-        // AND ici permet de rajouter une 3 eme condition a WHERE
+        // AND ici permet de rajouter une 3 eme condition a WHERE et placement par date decroissante (ORDER BY , DESC)
         let selectionPartage = `SELECT partage_post.*, partage_post.id_partage, partage_post.id_post_partage,
         utilisateurs.pseudo_utilisateur,
         posts.texte_post

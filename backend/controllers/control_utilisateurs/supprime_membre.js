@@ -2,7 +2,7 @@ const jwt    = require("jsonwebtoken");
 require("dotenv").config();
 
 
-const Utilisateur = require('C:/Users/vdbje/Desktop/P7/backend/connexionSQL.js');
+const Utilisateur = require("../../connexionSQL");
 
 // pour supprimer un compte
 

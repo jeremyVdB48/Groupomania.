@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt    = require("jsonwebtoken");
 
 
-const Utilisateur = require('C:/Users/vdbje/Desktop/P7/backend/connexionSQL.js');
+const Utilisateur = require('../../connexionSQL')
 
 require("dotenv").config();
 

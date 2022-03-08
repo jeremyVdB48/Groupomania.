@@ -35,7 +35,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
     .page-footer{
         background-color: #afafaf;
     }

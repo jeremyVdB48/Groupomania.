@@ -1,7 +1,7 @@
  <!-- body de la page profil -->
 
 <template> 
- <!-- création d'un formulaire pour modifier les données utilisateur -->
+ <!-- création d'un formulaire pour modifier les données utilisateur avec utilisation de pattern-->
 <div class="container">
     <div class=" card cardProfil  m-auto mt-5 p-5 text-center ">
         <h2 class=" display-6 text-center connexionCompte">Modification du profil :</h2>
@@ -9,11 +9,6 @@
             <div  class="form-group p-2 ">
                 <label for = "pseudo" class="h4">Pseudo : </label>
                 <input id = "pseudo" type="text"  class="form-control m-auto w-50 text-center" required pattern="[a-zA-ZÀ-ÿ\-]{3,20}" v-model="pseudo_utilisateur">
-            </div>
-
-            <div class="form-group p-2">
-                <label for = "email" class="h4">Email : </label>
-                <input id = "email" type="email"  class="form-control m-auto w-50 text-center" required pattern="[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+.[a-zA-Z.]{2,15}" v-model="email_utilisateur" >
             </div>
 
             <div class="form-group p-2">
@@ -37,8 +32,7 @@ export default {
     data() {
         return {
             pseudo_utilisateur:"",
-            email_utilisateur:"",
-            password_utilisateur:""
+            password_utilisateur:"",       
         }
     },
 
@@ -51,7 +45,6 @@ export default {
             axios
                 .put(`http://localhost:5000/api/utilisateur/modifMembre/${data.userId}`,{
                     pseudo_utilisateur: this.pseudo_utilisateur,
-                    email_utilisateur: this.email_utilisateur,
                     password_utilisateur: this.password_utilisateur
                 },
                  { 
@@ -63,12 +56,12 @@ export default {
                 ) 
                 .then(reponse => {
                     console.log("mise a jour de votre compte réussi !");
-                    console.log(reponse);
+                    console.log(reponse);                   
+                    this.$router.push ("/connexion")
                     
-                         this.$router.push ("/connexion")
-                    
-                })
+                }) 
                 .catch((error) => {
+                   
                     console.log(error);
                     console.log("Echec de la mise à jour de votre compte !");
                 })
@@ -89,6 +82,18 @@ export default {
 }
 .cardProfil{
     opacity: 0.9;
+}
+.messErreur {
+    animation: pulse 1.5s linear;
+}
+
+@keyframes pulse {
+
+    0%{opacity: 1;}
+    25%{opacity: 0;}
+    50%{opacity: 1;}
+    75%{opacity: 0;}
+    100%{opacity: 1;}
 }
 
 </style>

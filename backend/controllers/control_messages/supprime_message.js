@@ -1,4 +1,4 @@
-const Post = require("C:/Users/vdbje/Desktop/P7/backend/connexionSQL.js");
+const Post = require("../../connexionSQL");
 const jwt = require('jsonwebtoken');
 
 // supprime un message
