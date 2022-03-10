@@ -15,7 +15,7 @@ exports.recupAllCommentOnePost =(req, res) => {
         if (result.length == 0) {
             return res.status(400).json({message: "Aucun commentaire ici !"})
         }
-       // recup des infos commentaires + le pseudo de l'utilisateur et placement par date decroissante (ORDER BY , DESC)
+       // recup des infos commentaires + le pseudo de l'utilisateur et placement par ordre decroissante (ORDER BY , DESC)
         let recupInfoCommentaire = `SELECT commentaire_post.id_commentaire, commentaire_post.id_utilisateur, commentaire_post.id_post, commentaire_post.date_commentaire_post, commentaire_post.commentaire, utilisateurs.pseudo_utilisateur
         From commentaire_post
         LEFT JOIN utilisateurs ON utilisateurs.id_utilisateur = commentaire_post.id_utilisateur

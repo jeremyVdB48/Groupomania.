@@ -84,19 +84,11 @@ export default {
     // ici on stocke les données es variable qui seront utilisé par vue notamment grace à la syntaxe Mustache {{}}
     data(){
         return{
-            data: JSON.parse(this.$localStorage.get("utilisateur")),    
-            texte : "",
-            texte_post : "", 
-            date_post : "",        
-            id_utilisateur : "",
-            id_utilisateur_post : "",
-            id_post : "",
+            data: JSON.parse(this.$localStorage.get("utilisateur")),              
+            texte_post : "",           
             Commentaires : [],
-            commentaire : "",
-            comment: "",
-            info : "",
-            msg : [],
-            username : "", 
+            commentaire : "",          
+            msg : [],            
             searchPseudo : ""       
         }
             
