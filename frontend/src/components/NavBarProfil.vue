@@ -3,12 +3,12 @@
 <template>
 <div>
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <button @click="SuppMembre()" class="btn btn-outline-danger btn-lg m-3 mb-0" >Se désinscrire</button> <!--  au click du button on appel la fonction pour supprimer l'utilisateur  -->
-         <button @click="$router.push('/')" class="btn btn-outline-danger btn-lg m-3 mb-0" >Retour <b-icon-arrow-counterclockwise></b-icon-arrow-counterclockwise></button> <!-- au click du button on retourne sur la page de chat  -->
+        <button @click="SuppMembre()" class="btn btn-outline-danger btn-lg m-3 mb-0" >Se désinscrire</button> <!-- on écoute l'évenement et au click du button on appel la fonction pour supprimer l'utilisateur  -->
+         <button @click="$router.push('/')" class="btn btn-outline-danger btn-lg m-3 mb-0" >Retour <b-icon-arrow-counterclockwise></b-icon-arrow-counterclockwise></button> <!-- on écoute l'évenement et au click du button on retourne sur la page de chat  -->
     </div>
     <div>
 
-        <p class="h2 text-center">Bienvenue sur ton profil : <span class="usernameP">{{data.username}}</span></p> <!-- {{}} syntaxe " Mustache " liaison avec mon objet data recuperè avec axios  -->
+        <p class="h2 text-center">Bienvenue sur ton profil : <span class="usernameP">{{data.username}}</span></p> <!-- {{}} syntaxe " Mustache " liaison avec mon objet data recuperè dans mon local storage  -->
         
     </div>
 </div>
@@ -25,10 +25,8 @@ export default {
     data() {
        return{
             data:JSON.parse(this.$localStorage.get('utilisateur')),
-            id_utilisateur: "",
-            utilisateur: "",
-            pseudo_utilisateur: "",
-            userId: ""
+            utilisateur: [],
+            
        } 
     },
 // recuperation des infos de l'utilisateur avec axios
@@ -39,6 +37,7 @@ mounted() {
                 .then(reponse => {
                     console.log(reponse);
                     this.utilisateur = reponse.data
+                    console.log(this.utilisateur)
                 })
                 .catch(error => console.log(error))
 },
@@ -75,7 +74,7 @@ methods: {
 </script>
 
 
-<style>
+<style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Quintessential&display=swap');
 .usernameP{
     font-family: 'Dancing Script', cursive;

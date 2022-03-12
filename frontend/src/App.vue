@@ -2,8 +2,9 @@
 
 <template>
   <div id="app">
-      <pagehaute></pagehaute>         
-      <router-view></router-view>
+      <pagehaute></pagehaute>   
+            <!-- router-view définit l'endroit ou apparaitrons les composants définit par chaque route  -->
+      <router-view></router-view> 
   </div>
 </template>
 

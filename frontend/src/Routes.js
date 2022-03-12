@@ -9,7 +9,7 @@ import Inscription from "./components/PageWeb/Inscription"
 import Profil from "./components/PageWeb/Profil"
 import Tchat from "./components/PageWeb/Tchat"
 
-// route de mon url
+// route de mes Urls, le composant qui doit s'afficher a cette route
 export default [
     {path: "/connexion", component: Connexion},
     {path: "/inscription", component: Inscription},
